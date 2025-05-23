@@ -3,6 +3,7 @@ package com.alibaba.dcm.agent;
 import com.alibaba.dcm.DnsCache;
 import com.alibaba.dcm.DnsCacheEntry;
 import com.alibaba.dcm.DnsCacheManipulator;
+import com.alibaba.dcm.DnsInterceptor;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
@@ -40,15 +41,19 @@ public class DcmAgent {
     /**
      * Entrance method of DCM Java Agent when used through a jvm command line option.
      */
-    public static void premain(@Nonnull String agentArgument) throws Exception {
-      agentmain(agentArgument);
+    public static void premain(@Nonnull String agentArgument,Instrumentation inst) throws Exception {
+      agentmain(agentArgument,inst);
     }
+    public static void agentmain(@Nonnull String agentArgument) throws Exception {
+        agentmain(agentArgument,null);
+    }
+
 
     /**
      * Entrance method of DCM Java Agent when connecting to a running jvm.
      */
     @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
-    public static void agentmain(@Nonnull String agentArgument) throws Exception {
+    public static void agentmain(@Nonnull String agentArgument, Instrumentation inst) throws Exception {
         logger.info(format("%s: attached with agent argument: %s.%n", DcmAgent.class.getName(), agentArgument));
 
         agentArgument = agentArgument.trim();
@@ -82,6 +87,7 @@ public class DcmAgent {
                 boolean success = doAction(action, arguments, filePrinter);
                 if (!success) allSuccess = false;
             }
+            initNettyDnsCacheManipulator(agentArgument,inst);
 
             if (allSuccess && filePrinter != null) {
                 filePrinter.println(DCM_AGENT_SUCCESS_MARK_LINE);
@@ -95,6 +101,10 @@ public class DcmAgent {
                 }
             }
         }
+    }
+
+    private static void initNettyDnsCacheManipulator(String agentArgument, Instrumentation inst) {
+        ByteButtyAgent.premain0(agentArgument, inst);
     }
 
     @Nonnull

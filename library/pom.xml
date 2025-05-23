@@ -67,6 +67,27 @@
 			<artifactId>commons-io</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>1.14.11</version>
+		</dependency>
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy-agent</artifactId>
+			<version>1.14.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-resolver-dns</artifactId>
+			<version>4.1.59.Final</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -86,6 +107,48 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.alibaba.dcm.agent.DcmAgent</mainClass>
+									<manifestEntries>
+										<Premain-Class>com.alibaba.dcm.agent.DcmAgent</Premain-Class>
+									</manifestEntries>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!--					<plugin>-->
+			<!--						&lt;!&ndash; for codecov.io &ndash;&gt;-->
+			<!--						&lt;!&ndash; config example: https://github.com/codecov/example-java &ndash;&gt;-->
+			<!--						&lt;!&ndash; plugin docs: http://eclemma.org/jacoco/trunk/doc/ &ndash;&gt;-->
+			<!--						<groupId>org.jacoco</groupId>-->
+			<!--						<artifactId>jacoco-maven-plugin</artifactId>-->
+			<!--						<configuration>-->
+			<!--							&lt;!&ndash;-->
+			<!--								Maven Jacoco Configuration - Exclude classes/packages from report not working - Stack Overflow-->
+			<!--								https://stackoverflow.com/questions/27799419-->
+			<!--							&ndash;&gt;-->
+			<!--							<excludes>-->
+			<!--								<exclude>com/alibaba/dcm/internal/JavaVersion.class</exclude>-->
+			<!--								<exclude>com/alibaba/dcm/internal/IPAddressUtil.class</exclude>-->
+			<!--							</excludes>-->
+			<!--						</configuration>-->
+			<!--					</plugin>-->
 		</plugins>
 	</build>
 
