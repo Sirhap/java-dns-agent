@@ -23,6 +23,7 @@
 [📖 English Documentation](../../README.md) | 📖 中文文档
 
 ----------------------------------------
+二开文档:https://x4wo1u3ndu.feishu.cn/docx/UaTvd3sUAoc75nx1oz2cnE6WnMc
 
 Java Dns Cache Manipulator(`DCM`) 包含子工程：
 
